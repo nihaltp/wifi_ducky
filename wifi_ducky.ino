@@ -62,7 +62,7 @@ String strengthColor(int rssi) {
 
 String encryptionTypeName(uint8_t type) {
     switch (type) {
-        case ENC_TYPE_NONE: return "Open &#128275;";
+        case ENC_TYPE_NONE: return "Open;";
         case ENC_TYPE_WEP: return "WEP &#128274;";
         case ENC_TYPE_TKIP: return "WPA &#128274;";
         case ENC_TYPE_CCMP: return "WPA2 &#128274;";
@@ -182,7 +182,7 @@ void blinkLed(bool found) {
             digitalWrite(ledPin, ledState ? HIGH : LOW);
         }
     } else {
-        digitalWrite(ledPin, ledState ? HIGH : LOW);
+        digitalWrite(ledPin, LOW);
         ledState = false;
     }
 }
