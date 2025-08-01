@@ -47,13 +47,13 @@ void loadTargets() {
 
 // MARK: handleRoot
 void handleRoot() {
-    String html = "<!DOCTYPE html><html><head><title>WiFi Tracker</title><meta http-equiv='refresh' content='10'>";
+    String html = "<!DOCTYPE html><html><head><title>WiFi Ducky</title><meta http-equiv='refresh' content='10'>"; // refreshes every 10 seconds
     html += "<style>body{font-family:sans-serif;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ccc;padding:8px;}</style></head><body>";
     html += "<h2>Tracked SSIDs / BSSIDs</h2><table><tr><th>SSID</th><th>BSSID</th><th>Remove</th></tr>";
     
     for (size_t i = 0; i < targetSSIDs.size(); ++i) {
         html += "<tr><td>" + targetSSIDs[i] + "</td><td>" + targetBSSIDs[i] + "</td>";
-        html += "<td><a href='/delete?i=" + String(i) + "'>❌</a></td></tr>";
+        html += "<td><a href='/delete?i=" + String(i) + "'>&#10060;</a></td></tr>";  // ❌
     }
     
     html += "</table><br><h3>Add New Target</h3>";
@@ -79,7 +79,7 @@ void handleRoot() {
         
         html += "<tr><td>" + ssid + "</td><td>" + String(bssidStr) + "</td>";
         html += "<td>" + String(WiFi.RSSI(i)) + " dBm</td>";
-        html += "<td>" + String(matched ? "✅" : "❌") + "</td></tr>";
+        html += "<td>" + String(matched ? "&#9989;" : "&#10060;") + "</td></tr>"; // ✅ : ❌
     }
     html += "</table><p>Auto-refreshes every 10 seconds.</p></body></html>";
     
