@@ -6,11 +6,11 @@
 ESP8266WebServer server(80);
 std::vector<String> targetSSIDs;
 std::vector<String> targetBSSIDs;
-const char* filename = "/targets.txt";
+const char* targets = "/targets.txt";
 
 // MARK: saveTargets
 void saveTargets() {
-    File file = SPIFFS.open(filename, "w");
+    File file = SPIFFS.open(targets, "w");
     if (!file) {
         Serial.println("❌ Failed to open file for writing");
         return;
@@ -25,7 +25,7 @@ void saveTargets() {
 
 // MARK: loadTargets
 void loadTargets() {
-    File file = SPIFFS.open(filename, "r");
+    File file = SPIFFS.open(targets, "r");
     if (!file) {
         Serial.println("⚠️ No existing target list found.");
         return;
