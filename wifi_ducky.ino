@@ -10,9 +10,12 @@ std::vector<String> targetBSSIDs;
 const char* targets = "/targets.txt";
 
 bool toggle = true; // state of auto refresh
+bool matched = false; // if the target is found
 
 const byte DNS_PORT = 53;
 DNSServer dnsServer;
+
+const int ledPin = 2;
 
 // MARK: saveTargets
 void saveTargets() {
@@ -111,7 +114,7 @@ void handleRoot() {
         char bssidStr[18];
         sprintf(bssidStr, "%02X:%02X:%02X:%02X:%02X:%02X", b[0], b[1], b[2], b[3], b[4], b[5]);
         
-        bool matched = false;
+        matched = false;
         for (size_t j = 0; j < targetSSIDs.size(); ++j) {
             if (targetSSIDs[j] == ssid || targetBSSIDs[j] == String(bssidStr)) {
                 matched = true;
@@ -168,6 +171,22 @@ void toggleRefresh() {
     server.send(302, "text/plain", "");
 }
 
+void blinkLed(bool found) {
+    static unsigned long lastBlink = 0;
+    static bool ledState = false;
+    
+    if (found) {
+        if (millis() - lastBlink >= 500) {
+            lastBlink = millis();
+            ledState = !ledState;
+            digitalWrite(ledPin, ledState ? HIGH : LOW);
+        }
+    } else {
+        digitalWrite(ledPin, ledState ? HIGH : LOW);
+        ledState = false;
+    }
+}
+
 // MARK: setup
 void setup() {
     Serial.begin(115200);
@@ -189,10 +208,14 @@ void setup() {
     server.begin();
     
     Serial.println("🌐 Web server started at 192.168.4.1");
+    
+    pinMode(ledPin, OUTPUT);
+    digitalWrite(ledPin, LOW);
 }
 
 // MARK: loop
 void loop() {
     dnsServer.processNextRequest();
     server.handleClient();
+    blinkLed(match);
 }
