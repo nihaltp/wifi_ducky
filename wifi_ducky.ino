@@ -63,9 +63,26 @@ void handleRoot() {
     // WiFi Scan Table
     html += "<h3>Nearby Networks</h3><table><tr><th>SSID</th><th>BSSID</th><th>RSSI</th><th>Status</th></tr>";
     int n = WiFi.scanNetworks(false, true);
+    
+    int indices[n];
+    for (int i = 0; i < n; i++) {
+        indices[i] = i;
+    }
+    
+    // Simple bubble sort by RSSI
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (WiFi.RSSI(indices[j]) > WiFi.RSSI(indices[i])) {
+                int temp = indices[i];
+                indices[i] = indices[j];
+                indices[j] = temp;
+            }
+        }
+    }
+    
     for (int i = 0; i < n; ++i) {
-        String ssid = WiFi.SSID(i);
-        uint8_t* b = WiFi.BSSID(i);
+        String ssid = WiFi.SSID(indices[i]);
+        uint8_t* b = WiFi.BSSID(indices[i]);
         char bssidStr[18];
         sprintf(bssidStr, "%02X:%02X:%02X:%02X:%02X:%02X", b[0], b[1], b[2], b[3], b[4], b[5]);
         
@@ -78,7 +95,7 @@ void handleRoot() {
         }
         
         html += "<tr><td>" + ssid + "</td><td>" + String(bssidStr) + "</td>";
-        html += "<td>" + String(WiFi.RSSI(i)) + " dBm</td>";
+        html += "<td>" + String(WiFi.RSSI(indices[i])) + " dBm</td>";
         html += "<td>" + String(matched ? "&#9989;" : "&#10060;") + "</td></tr>"; // ✅ : ❌
     }
     html += "</table><p>Auto-refreshes every 10 seconds.</p></body></html>";
