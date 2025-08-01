@@ -8,6 +8,8 @@ std::vector<String> targetSSIDs;
 std::vector<String> targetBSSIDs;
 const char* targets = "/targets.txt";
 
+bool toggle = True; // state of auto refresh
+
 // MARK: saveTargets
 void saveTargets() {
     File file = SPIFFS.open(targets, "w");
@@ -64,7 +66,8 @@ String encryptionTypeName(uint8_t type) {
 
 // MARK: handleRoot
 void handleRoot() {
-    String html = "<!DOCTYPE html><html><head><title>WiFi Ducky</title><meta http-equiv='refresh' content='10'>"; // refreshes every 10 seconds
+    String html = "<!DOCTYPE html><html><head><title>WiFi Ducky</title>";
+    if (toggle) html += "<meta http-equiv='refresh' content='10'>"; // refreshes every 10 seconds
     html += "<style>body{font-family:sans-serif;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ccc;padding:8px;}</style></head><body>";
     html += "<h2>Tracked SSIDs / BSSIDs</h2><table><tr><th>SSID</th><th>BSSID</th><th>Remove</th></tr>";
     
@@ -117,7 +120,8 @@ void handleRoot() {
         html += "<td>" + String(matched ? "&#9989;" : "&#10060;") + "</td></tr>"; // ✅ : ❌
         html += "<td>" + encryptionTypeName(WiFi.encryptionType(index)) + "</td>";
     }
-    html += "</table><p>Auto-refreshes every 10 seconds.</p></body></html>";
+    html += "<button onclick = '/refresh'>Toggle: " + toggle ? "ON" : "OFF" +"</button>";
+    if (toggle) html += "</table><p>Auto-refreshes every 10 seconds.</p></body></html>";
     
     server.send(200, "text/html", html);
 }
@@ -151,6 +155,11 @@ void handleDelete() {
     server.send(302, "text/plain", "");
 }
 
+// MARK: toggleRefresh
+void toggleRefresh() {
+    toggle = !toggle;
+}
+
 // MARK: setup
 void setup() {
     Serial.begin(115200);
@@ -167,6 +176,7 @@ void setup() {
     server.on("/", handleRoot);
     server.on("/add", handleAdd);
     server.on("/delete", handleDelete);
+    server.on("/refresh", toggleRefresh);
     server.begin();
     
     Serial.println("🌐 Web server started at 192.168.4.1");
