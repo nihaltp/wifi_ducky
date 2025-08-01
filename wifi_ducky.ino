@@ -8,7 +8,7 @@ std::vector<String> targetSSIDs;
 std::vector<String> targetBSSIDs;
 const char* targets = "/targets.txt";
 
-bool toggle = True; // state of auto refresh
+bool toggle = true; // state of auto refresh
 
 // MARK: saveTargets
 void saveTargets() {
@@ -81,7 +81,7 @@ void handleRoot() {
     html += "SSID: <input name='ssid'> BSSID: <input name='bssid'> <input type='submit' value='Add'></form><hr>";
     
     // WiFi Scan Table
-    html += "<h3>Nearby Networks</h3><table><tr><th>SSID</th><th>BSSID</th><th>RSSI</th><th>Status</th></tr>";
+    html += "<h3>Nearby Networks</h3><table><tr><th>SSID</th><th>BSSID</th><th>RSSI</th><th>Status</th><th>Encryption</th></tr>";
     int n = WiFi.scanNetworks(false, true);
     
     int indices[n];
@@ -120,8 +120,10 @@ void handleRoot() {
         html += "<td>" + String(matched ? "&#9989;" : "&#10060;") + "</td></tr>"; // ✅ : ❌
         html += "<td>" + encryptionTypeName(WiFi.encryptionType(index)) + "</td>";
     }
-    html += "<button onclick = '/refresh'>Toggle: " + toggle ? "ON" : "OFF" +"</button>";
-    if (toggle) html += "</table><p>Auto-refreshes every 10 seconds.</p></body></html>";
+    html += "<button onclick = '/refresh'>Toggle: " + String(toggle ? "ON" : "OFF") + "</button>";
+    html += "</table>";
+    if (toggle) html += "<p>Auto-refreshes every 10 seconds.</p>";
+    html += "</body></html>";
     
     server.send(200, "text/html", html);
 }
@@ -158,6 +160,8 @@ void handleDelete() {
 // MARK: toggleRefresh
 void toggleRefresh() {
     toggle = !toggle;
+    server.sendHeader("Location", "/", true);
+    server.send(302, "text/plain", "");
 }
 
 // MARK: setup
