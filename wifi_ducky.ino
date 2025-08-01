@@ -51,6 +51,17 @@ String strengthColor(int rssi) {
     else return "red";
 }
 
+String encryptionTypeName(uint8_t type) {
+    switch (type) {
+        case ENC_TYPE_NONE: return "Open &#128275;";
+        case ENC_TYPE_WEP: return "WEP &#128274;";
+        case ENC_TYPE_TKIP: return "WPA &#128274;";
+        case ENC_TYPE_CCMP: return "WPA2 &#128274;";
+        case ENC_TYPE_AUTO: return "Auto &#128274;";
+        default: return "Unknown";
+    }
+}
+
 // MARK: handleRoot
 void handleRoot() {
     String html = "<!DOCTYPE html><html><head><title>WiFi Ducky</title><meta http-equiv='refresh' content='10'>"; // refreshes every 10 seconds
@@ -104,6 +115,7 @@ void handleRoot() {
         html += "<tr><td>" + ssid + "</td><td>" + String(bssidStr) + "</td>";
         html += "<td style='color:" + strengthColor(WiFi.RSSI(index)) + String(WiFi.RSSI(index)) + " dBm</td>";
         html += "<td>" + String(matched ? "&#9989;" : "&#10060;") + "</td></tr>"; // ✅ : ❌
+        html += "<td>" + encryptionTypeName(WiFi.encryptionType(index)) + "</td>";
     }
     html += "</table><p>Auto-refreshes every 10 seconds.</p></body></html>";
     
