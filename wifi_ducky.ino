@@ -45,6 +45,12 @@ void loadTargets() {
     Serial.println("✅ Loaded target list from SPIFFS.");
 }
 
+String strengthColor(int rssi) {
+    if (rssi >= -65) return "green";
+    else if (rssi >= -75) return "orange";
+    else return "red";
+}
+
 // MARK: handleRoot
 void handleRoot() {
     String html = "<!DOCTYPE html><html><head><title>WiFi Ducky</title><meta http-equiv='refresh' content='10'>"; // refreshes every 10 seconds
@@ -81,8 +87,9 @@ void handleRoot() {
     }
     
     for (int i = 0; i < n; ++i) {
-        String ssid = WiFi.SSID(indices[i]);
-        uint8_t* b = WiFi.BSSID(indices[i]);
+        int index = indices[i];
+        String ssid = WiFi.SSID(index);
+        uint8_t* b = WiFi.BSSID(index);
         char bssidStr[18];
         sprintf(bssidStr, "%02X:%02X:%02X:%02X:%02X:%02X", b[0], b[1], b[2], b[3], b[4], b[5]);
         
@@ -95,7 +102,7 @@ void handleRoot() {
         }
         
         html += "<tr><td>" + ssid + "</td><td>" + String(bssidStr) + "</td>";
-        html += "<td>" + String(WiFi.RSSI(indices[i])) + " dBm</td>";
+        html += "<td style='color:" + strengthColor(WiFi.RSSI(index)) + String(WiFi.RSSI(index)) + " dBm</td>";
         html += "<td>" + String(matched ? "&#9989;" : "&#10060;") + "</td></tr>"; // ✅ : ❌
     }
     html += "</table><p>Auto-refreshes every 10 seconds.</p></body></html>";
