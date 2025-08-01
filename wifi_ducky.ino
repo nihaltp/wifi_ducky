@@ -2,6 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <vector>
+#include <DNSServer.h>
 
 ESP8266WebServer server(80);
 std::vector<String> targetSSIDs;
@@ -9,6 +10,9 @@ std::vector<String> targetBSSIDs;
 const char* targets = "/targets.txt";
 
 bool toggle = true; // state of auto refresh
+
+const byte DNS_PORT = 53;
+DNSServer dnsServer;
 
 // MARK: saveTargets
 void saveTargets() {
@@ -169,6 +173,7 @@ void setup() {
     Serial.begin(115200);
     WiFi.mode(WIFI_AP);
     WiFi.softAP("WiFi Ducky", "12345678");
+    dnsServer.start(DNS_PORT, "*", WiFi.softAPIP());
     
     if (!SPIFFS.begin()) {
         Serial.println("❌ SPIFFS failed to mount!");
@@ -188,5 +193,6 @@ void setup() {
 
 // MARK: loop
 void loop() {
+    dnsServer.processNextRequest();
     server.handleClient();
 }
