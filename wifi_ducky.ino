@@ -123,11 +123,11 @@ void handleRoot() {
         }
         
         html += "<tr><td>" + ssid + "</td><td>" + String(bssidStr) + "</td>";
-        html += "<td style='color:" + strengthColor(WiFi.RSSI(index)) + String(WiFi.RSSI(index)) + " dBm</td>";
+        html += "<td style='color:" + strengthColor(WiFi.RSSI(index)) + "'>" + String(WiFi.RSSI(index)) + " dBm</td>";
         html += "<td>" + String(matched ? "&#9989;" : "&#10060;") + "</td>"; // ✅ : ❌
         html += "<td>" + encryptionTypeName(WiFi.encryptionType(index)) + "</td></tr>";
     }
-    html += "<button onclick = '/refresh'>Toggle: " + String(toggle ? "ON" : "OFF") + "</button>";
+    html += "<a href = '/refresh'><button>Toggle: " + String(toggle ? "ON" : "OFF") + "</button></a>";
     html += "</table>";
     if (toggle) html += "<p>Auto-refreshes every 10 seconds.</p>";
     html += "</body></html>";
