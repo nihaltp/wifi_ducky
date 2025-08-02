@@ -5,7 +5,7 @@
 
 
 ## Basic Details
-### Team Name: [Binary Fools]
+### Team Name: Binary Fools
 
 
 ### Team Members
@@ -87,9 +87,8 @@ For Hardware:
 [Add any extra demo materials/links]
 
 ## Team Contributions
-- [Name 1]: [Specific contributions]
-- [Name 2]: [Specific contributions]
-- [Name 3]: [Specific contributions]
+- NIAHL T P[NIAHL T P](https://github.com/nihaltp): [Specific contributions]
+- BHAGATH KRISHNA G[BHAGATH KRISHNA G](https://github.com/Bhagath-Kris07): [Specific contributions]
 
 ---
 Made with ❤️ at TinkerHub Useless Projects 
