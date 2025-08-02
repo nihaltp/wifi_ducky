@@ -52,40 +52,14 @@ The interface, without any targets
 ![Screenshot2](/img/img2.jpg)
 The interface after adding targets
 
-# Diagrams
-![Workflow](Add your workflow/architecture diagram here)
-*Add caption explaining your workflow*
-
-For Hardware:
-
-# Schematic & Circuit
-![Circuit](Add your circuit diagram here)
-*Add caption explaining connections*
-
-![Schematic](Add your schematic diagram here)
-*Add caption explaining the schematic*
-
-# Build Photos
-![Components](Add photo of your components here)
-*List out all components shown*
-
-![Build](Add photos of build process here)
-*Explain the build steps*
-
-![Final](Add photo of final product here)
-*Explain the final build*
-
 ### Project Demo
 # Video
-[Add your demo video link here]
-*Explain what the video demonstrates*
-
-# Additional Demos
-[Add any extra demo materials/links]
+[Video](/vid/video.mp4)
+This video shows the working and functionalities of WiFi Ducky
 
 ## Team Contributions
-- NIAHL T P[NIAHL T P](https://github.com/nihaltp): [Specific contributions]
-- BHAGATH KRISHNA G[BHAGATH KRISHNA G](https://github.com/Bhagath-Kris07): [Specific contributions]
+- NIHAL T P[NIHAL T P](https://github.com/nihaltp): Programming and debugging ESP82666
+- BHARATH KRISHNA G[BHARATH KRISHNA G](https://github.com/Bharath-Kris07): Programming and debugging ESP82666 
 
 ---
 Made with ❤️ at TinkerHub Useless Projects 
