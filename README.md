@@ -1,47 +1,46 @@
 <img width="3188" height="1202" alt="frame (3)" src="https://github.com/user-attachments/assets/517ad8e9-ad22-457d-9538-a9e62d137cd7" />
 
 
-# [Project Name] 🎯
+# WiFi Ducky 🎯 
 
 
 ## Basic Details
-### Team Name: [Name]
+### Team Name: [Binary Fools]
 
 
 ### Team Members
-- Team Lead: [Name] - [College]
-- Member 2: [Name] - [College]
-- Member 3: [Name] - [College]
+- Team Lead: Nihal T P - Rajiv Gandhi Institute of Technology
+- Member 2: Bharath Krishna G - Rajiv Gandhi Institute of Technology
 
 ### Project Description
-[2-3 lines about what your project does]
+This project is a Wi-Fi tracking tool using the ESP8266 that scans for nearby Wi-Fi networks and compares them against a list of target SSIDs and BSSIDs defined by the user. If a match is found, it activates a blinking LED indicator, and a local web interface (hosted at 192.168.4.1) allows users to manage the target list and view nearby network data in real time.
 
 ### The Problem (that doesn't exist)
-[What ridiculous problem are you solving?]
+What if you're too lazy to check who’s around... but still paranoid enough to want to know when they are near?
 
 ### The Solution (that nobody asked for)
-[How are you solving it? Keep it fun!]
+Just plug in this ESP8266, and let a glowing LED tell you when your neighbor’s Wi-Fi is close. Like a social radar… but completely pointless.
 
 ## Technical Details
 ### Technologies/Components Used
 For Software:
-- [Languages used]
-- [Frameworks used]
-- [Libraries used]
-- [Tools used]
+- C++ (Arduino core)
+- ESP8266WiFi, ESP8266WebServer libraries
+- FS, ESP8266WiFi, DNSServer,ESP8266WebServer 
+- SPIFFS, Arduino IDE
 
 For Hardware:
-- [List main components]
-- [List specifications]
-- [List tools required]
+- NODEMCU ESP8266 
+- USB to UART cable
 
 ### Implementation
 For Software:
-# Installation
-[commands]
-
 # Run
-[commands]
+
+1.Flash the sketch to the ESP8266
+2.Connect to the ESP Wi-Fi using password
+3.Visit 192.168.4.1 in browser
+4.Add target SSIDs/BSSIDs and blink away
 
 ### Project Documentation
 For Software:
