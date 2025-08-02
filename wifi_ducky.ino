@@ -71,24 +71,8 @@ String encryptionTypeName(uint8_t type) {
     }
 }
 
-// MARK: handleRoot
-void handleRoot() {
-    String html = "<!DOCTYPE html><html><head><title>WiFi Ducky</title>";
-    if (toggle) html += "<meta http-equiv='refresh' content='10'>"; // refreshes every 10 seconds
-    html += "<style>body{font-family:sans-serif;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ccc;padding:8px;}</style></head><body>";
-    html += "<h2>Tracked SSIDs / BSSIDs</h2><table><tr><th>SSID</th><th>BSSID</th><th>Remove</th></tr>";
-    
-    for (size_t i = 0; i < targetSSIDs.size(); ++i) {
-        html += "<tr><td>" + targetSSIDs[i] + "</td><td>" + targetBSSIDs[i] + "</td>";
-        html += "<td><a href='/delete?i=" + String(i) + "'>&#10060;</a></td></tr>";  // ❌
-    }
-    
-    html += "</table><br><h3>Add New Target</h3>";
-    html += "<form action='/add' method='GET'>";
-    html += "SSID: <input name='ssid'> BSSID: <input name='bssid'> <input type='submit' value='Add'></form><hr>";
-    
-    // WiFi Scan Table
-    html += "<h3>Nearby Networks</h3><table><tr><th>SSID</th><th>BSSID</th><th>RSSI</th><th>Status</th><th>Encryption</th></tr>";
+bool scanAndCheckTargets(String& html) {
+    bool anyMatch = false;
     int n = WiFi.scanNetworks(false, true);
     
     int indices[n];
@@ -116,24 +100,43 @@ void handleRoot() {
         
         bool isMatch = false;
         for (size_t j = 0; j < targetSSIDs.size(); ++j) {
-            if (targetSSIDs[j] == ssid || targetBSSIDs[j] == String(bssidStr)) {
+            if (targetSSIDs[j] == ssid || targetBSSIDs[j].equalsIgnoreCase(bssidStr)) {
                 isMatch = true;
+                anyMatch = true;
                 break;
             }
         }
-        
+
         html += "<tr><td>" + ssid + "</td><td>" + String(bssidStr) + "</td>";
         html += "<td style='color:" + strengthColor(WiFi.RSSI(index)) + "'>" + String(WiFi.RSSI(index)) + " dBm</td>";
-        html += "<td>" + String(isMatch ? "&#9989;" : "&#10060;") + "</td>"; // ✅ : ❌
+        html += "<td>" + String(isMatch ? "&#9989;" : "&#10060;") + "</td>";
         html += "<td>" + encryptionTypeName(WiFi.encryptionType(index)) + "</td></tr>";
     }
-    html += "<a href = '/refresh'><button>Toggle: " + String(toggle ? "ON" : "OFF") + "</button></a>";
-    html += "</table>";
+
+    return anyMatch;
+}
+
+// Serve main page
+void handleRoot() {
+    String html = "<!DOCTYPE html><html><head><title>WiFi Ducky</title>";
+    if (toggle) html += "<meta http-equiv='refresh' content='10'>";
+    html += "<style>body{font-family:sans-serif;}table{border-collapse:collapse;width:100%;}th,td{border:1px solid #ccc;padding:8px;}</style></head><body>";
+
+    html += "<h2>Tracked SSIDs / BSSIDs</h2><table><tr><th>SSID</th><th>BSSID</th><th>Remove</th></tr>";
+    for (size_t i = 0; i < targetSSIDs.size(); ++i) {
+        html += "<tr><td>" + targetSSIDs[i] + "</td><td>" + targetBSSIDs[i] + "</td>";
+        html += "<td><a href='/delete?i=" + String(i) + "'>&#10060;</a></td></tr>";
+    }
+    html += "</table><br><h3>Add New Target</h3><form action='/add' method='GET'>";
+    html += "SSID: <input name='ssid'> BSSID: <input name='bssid'> <input type='submit' value='Add'></form><hr>";
+
+    html += "<h3>Nearby Networks</h3><table><tr><th>SSID</th><th>BSSID</th><th>RSSI</th><th>Status</th><th>Encryption</th></tr>";
+    matched = scanAndCheckTargets(html);
+    html += "</table><br><a href='/refresh'><button>Toggle: " + String(toggle ? "ON" : "OFF") + "</button></a>";
+
     if (toggle) html += "<p>Auto-refreshes every 10 seconds.</p>";
     html += "</body></html>";
     
-    matched = isMatch;
-
     server.send(200, "text/html", html);
 }
 
@@ -173,6 +176,7 @@ void toggleRefresh() {
     server.send(302, "text/plain", "");
 }
 
+// Blink LED if matched
 void blinkLed(bool found) {
     static unsigned long lastBlink = 0;
     static bool ledState = false;
@@ -195,7 +199,7 @@ void setup() {
     WiFi.mode(WIFI_AP);
     WiFi.softAP("WiFi Ducky", "12345678");
     dnsServer.start(DNS_PORT, "*", WiFi.softAPIP());
-    
+
     if (!SPIFFS.begin()) {
         Serial.println("❌ SPIFFS failed to mount!");
         return;
