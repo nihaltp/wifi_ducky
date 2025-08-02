@@ -114,17 +114,17 @@ void handleRoot() {
         char bssidStr[18];
         sprintf(bssidStr, "%02X:%02X:%02X:%02X:%02X:%02X", b[0], b[1], b[2], b[3], b[4], b[5]);
         
-        matched = false;
+        bool isMatch = false;
         for (size_t j = 0; j < targetSSIDs.size(); ++j) {
             if (targetSSIDs[j] == ssid || targetBSSIDs[j] == String(bssidStr)) {
-                matched = true;
+                isMatch = true;
                 break;
             }
         }
         
         html += "<tr><td>" + ssid + "</td><td>" + String(bssidStr) + "</td>";
         html += "<td style='color:" + strengthColor(WiFi.RSSI(index)) + "'>" + String(WiFi.RSSI(index)) + " dBm</td>";
-        html += "<td>" + String(matched ? "&#9989;" : "&#10060;") + "</td>"; // ✅ : ❌
+        html += "<td>" + String(isMatch ? "&#9989;" : "&#10060;") + "</td>"; // ✅ : ❌
         html += "<td>" + encryptionTypeName(WiFi.encryptionType(index)) + "</td></tr>";
     }
     html += "<a href = '/refresh'><button>Toggle: " + String(toggle ? "ON" : "OFF") + "</button></a>";
@@ -132,6 +132,8 @@ void handleRoot() {
     if (toggle) html += "<p>Auto-refreshes every 10 seconds.</p>";
     html += "</body></html>";
     
+    matched = isMatch;
+
     server.send(200, "text/html", html);
 }
 
@@ -179,7 +181,7 @@ void blinkLed(bool found) {
         if (millis() - lastBlink >= 500) {
             lastBlink = millis();
             ledState = !ledState;
-            digitalWrite(ledPin, ledState ? HIGH : LOW);
+            digitalWrite(ledPin, ledState);
         }
     } else {
         digitalWrite(ledPin, LOW);
