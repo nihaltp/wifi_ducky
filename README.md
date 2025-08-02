@@ -46,14 +46,11 @@ For Software:
 For Software:
 
 # Screenshots (Add at least 3)
-![Screenshot1](Add screenshot 1 here with proper name)
-*Add caption explaining what this shows*
+![Screenshot1](/img/img1.jpg)
+The interface, without any targets
 
-![Screenshot2](Add screenshot 2 here with proper name)
-*Add caption explaining what this shows*
-
-![Screenshot3](Add screenshot 3 here with proper name)
-*Add caption explaining what this shows*
+![Screenshot2](/img/img2.jpg)
+The interface after adding targets
 
 # Diagrams
 ![Workflow](Add your workflow/architecture diagram here)
