@@ -58,8 +58,8 @@ The interface after adding targets
 This video shows the working and functionalities of WiFi Ducky
 
 ## Team Contributions
-- NIHAL T P[NIHAL T P](https://github.com/nihaltp): Programming and debugging ESP82666
-- BHARATH KRISHNA G[BHARATH KRISHNA G](https://github.com/Bharath-Kris07): Programming and debugging ESP82666 
+- [NIHAL T P](https://github.com/nihaltp): Programming and debugging ESP82666
+- [BHARATH KRISHNA G](https://github.com/Bharath-Kris07): Programming and debugging ESP82666 
 
 ---
 Made with ❤️ at TinkerHub Useless Projects 
