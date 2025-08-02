@@ -11,6 +11,8 @@ const char* targets = "/targets.txt";
 
 bool toggle = true; // state of auto refresh
 bool matched = false; // if the target is found
+unsigned long lastBlink = 0;
+bool ledState = false;
 
 const byte DNS_PORT = 53;
 DNSServer dnsServer;
@@ -62,7 +64,7 @@ String strengthColor(int rssi) {
 
 String encryptionTypeName(uint8_t type) {
     switch (type) {
-        case ENC_TYPE_NONE: return "Open;";
+        case ENC_TYPE_NONE: return "Open";
         case ENC_TYPE_WEP: return "WEP &#128274;";
         case ENC_TYPE_TKIP: return "WPA &#128274;";
         case ENC_TYPE_CCMP: return "WPA2 &#128274;";
@@ -114,17 +116,27 @@ void handleRoot() {
         char bssidStr[18];
         sprintf(bssidStr, "%02X:%02X:%02X:%02X:%02X:%02X", b[0], b[1], b[2], b[3], b[4], b[5]);
         
-        bool isMatch = false;
         for (size_t j = 0; j < targetSSIDs.size(); ++j) {
             if (targetSSIDs[j] == ssid || targetBSSIDs[j] == String(bssidStr)) {
-                isMatch = true;
+                matched = true;
                 break;
             }
         }
         
+        if (matched) {
+            if (millis() - lastBlink >= 500) {
+                lastBlink = millis();
+                ledState = !ledState;
+                digitalWrite(ledPin, ledState);
+            }
+        } else {
+            ledState = false;
+            digitalWrite(ledPin, LOW);
+        }
+        
         html += "<tr><td>" + ssid + "</td><td>" + String(bssidStr) + "</td>";
         html += "<td style='color:" + strengthColor(WiFi.RSSI(index)) + "'>" + String(WiFi.RSSI(index)) + " dBm</td>";
-        html += "<td>" + String(isMatch ? "&#9989;" : "&#10060;") + "</td>"; // ✅ : ❌
+        html += "<td>" + String(matched ? "&#9989;" : "&#10060;") + "</td>"; // ✅ : ❌
         html += "<td>" + encryptionTypeName(WiFi.encryptionType(index)) + "</td></tr>";
     }
     html += "<a href = '/refresh'><button>Toggle: " + String(toggle ? "ON" : "OFF") + "</button></a>";
@@ -132,8 +144,6 @@ void handleRoot() {
     if (toggle) html += "<p>Auto-refreshes every 10 seconds.</p>";
     html += "</body></html>";
     
-    matched = isMatch;
-
     server.send(200, "text/html", html);
 }
 
@@ -171,22 +181,6 @@ void toggleRefresh() {
     toggle = !toggle;
     server.sendHeader("Location", "/", true);
     server.send(302, "text/plain", "");
-}
-
-void blinkLed(bool found) {
-    static unsigned long lastBlink = 0;
-    static bool ledState = false;
-    
-    if (found) {
-        if (millis() - lastBlink >= 500) {
-            lastBlink = millis();
-            ledState = !ledState;
-            digitalWrite(ledPin, ledState);
-        }
-    } else {
-        digitalWrite(ledPin, LOW);
-        ledState = false;
-    }
 }
 
 // MARK: setup
