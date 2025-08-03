@@ -60,6 +60,10 @@ The interface, without any targets
 ![Screenshot 2](/img/img2.jpg)
 The interface after adding targets
 
+#### Diagrams
+
+![Workflow](./img/workflow.png)
+
 ### Project Demo
 
 #### Video
